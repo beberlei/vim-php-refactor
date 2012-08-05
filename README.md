@@ -8,6 +8,7 @@ Some very simple refactorings for PHP code using VIM:
 * Extract Class Property
 * Rename Local Variable
 * Rename Class Variable
+* Implement all abstract functions
 
 ## Requirements
 
@@ -23,6 +24,7 @@ Default key mappings defined:
     nnoremap \ei :call ExtractInterface()<CR>
     nnoremap \rlv :call RenameLocalVariable()<CR>
     nnoremap \rcv :call RenameClassVariable()<CR>
+    nnoremap \iaf :call ImplementAbstractFunctions()<CR>
 
 If you want avoid them being set put the following in your vimrc:
 
@@ -58,4 +60,11 @@ Renames variable under cursor inside a function/method to a new name.
 
 ## Rename class variable
 
-Renames variable under cursor inside the whole class. No renaming of getter/setter or checking for breaks in related classes takes place.
+Renames variable under cursor inside the whole class. No renaming of
+getter/setter or checking for breaks in related classes takes place.
+
+## Implement all abstract functions
+
+If you copy the body of abstract class or interface into a concrete implementation class,
+and then execute this refactoring. It will turn all abstract methods into empty body
+methods throwing a runtime exception.

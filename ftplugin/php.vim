@@ -41,6 +41,7 @@ if !exists("no_plugin_maps") && !exists("no_php_maps")
     nnoremap \ei :call ExtractInterface()<CR>
     nnoremap \rlv :call RenameLocalVariable()<CR>
     nnoremap \rcv :call RenameClassVariable()<CR>
+    nnoremap \iaf :call ImplementAbstractFunctions()<CR>
 endif
 
 function! ExtractMethod() range
@@ -113,5 +114,16 @@ function! RenameClassVariable()
     exec startLine . ',' . stopLine . ':s/$this->' . oldName . '/$this->'. newName .'/ge'
     exec ":vimgrep /" . newName . "/ %"
     :copen
+endfunction
+
+function! ImplementAbstractFunctions()
+    if (getline(line(".")) =~ 'function.*;$')
+        g/function.*;$/norm! o{
+        g/function.*;$/norm! jothrow new \RuntimeException('Not implemented, yet.');
+        g/function.*;$/norm! jjo}
+        g/function.*;$/s/abstract //
+        g/    function.*;$/s/function/public function/
+        g/function.*;$/s/;$//
+    endif
 endfunction
 
