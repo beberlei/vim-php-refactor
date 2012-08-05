@@ -12,7 +12,7 @@ Some very simple refactorings for PHP code using VIM:
 
 ## Requirements
 
-* Comma Object (austintayler/vim-commaobject)
+* VIM Comma Object ([austintaylor/vim-commaobject](http://github.com/austintaylor/vim-commaobject))
 
 ## Mappings
 
