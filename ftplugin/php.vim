@@ -35,16 +35,38 @@
 " SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 if !exists("no_plugin_maps") && !exists("no_php_maps")
-  vnoremap \em :call ExtractMethod()<CR>
-  nnoremap \ev :call ExtractVariable()<CR>
-  nnoremap \ep :call ExtractClassProperty()<CR>
-  nnoremap \ei :call ExtractInterface()<CR>
-  nnoremap \rlv :call RenameLocalVariable()<CR>
-  nnoremap \rcv :call RenameClassVariable()<CR>
-  nnoremap \iaf :call ImplementAbstractFunctions()<CR>
+  if !hasmapto('<Plug>ExtractMethod')
+    xmap <buffer> <unique> <LocalLeader>em <Plug>ExtractMethod
+  endif
+  if !hasmapto('<Plug>ExtractVariable')
+    nmap <buffer> <unique> <LocalLeader>ev <Plug>ExtractVariable
+  endif
+  if !hasmapto('<Plug>ExtractClassProperty')
+    nmap <buffer> <unique> <LocalLeader>ep <Plug>ExtractClassProperty
+  endif
+  if !hasmapto('<Plug>ExtractInterface')
+    nmap <buffer> <unique> <LocalLeader>ei <Plug>ExtractInterface
+  endif
+  if !hasmapto('<Plug>RenameLocalVariable')
+    nmap <buffer> <unique> <LocalLeader>rlv <Plug>RenameLocalVariable
+  endif
+  if !hasmapto('<Plug>RenameClassVariable')
+    nmap <buffer> <unique> <LocalLeader>rcv <Plug>RenameClassVariable
+  endif
+  if !hasmapto('<Plug>ImplementAbstractFunctions')
+    nmap <buffer> <unique> <LocalLeader>iaf <Plug>ImplementAbstractFunctions
+  endif
 endif
 
-function! ExtractMethod() range
+noremap <buffer> <unique> <Plug>ExtractMethod              :call <SID>ExtractMethod()<CR>
+noremap <buffer> <unique> <Plug>ExtractVariable            :call <SID>ExtractVariable()<CR>
+noremap <buffer> <unique> <Plug>ExtractClassProperty       :call <SID>ExtractClassProperty()<CR>
+noremap <buffer> <unique> <Plug>ExtractInterface           :call <SID>ExtractInterface()<CR>
+noremap <buffer> <unique> <Plug>RenameLocalVariable        :call <SID>RenameLocalVariable()<CR>
+noremap <buffer> <unique> <Plug>RenameClassVariable        :call <SID>RenameClassVariable()<CR>
+noremap <buffer> <unique> <Plug>ImplementAbstractFunctions :call <SID>ImplementAbstractFunctions()<CR>
+
+function! s:ExtractMethod() range
   let name = inputdialog("Name of new method:")
   '<
   exec "normal! O\<BS>private function " . name . "()\<CR>{\<Esc>"
@@ -59,7 +81,7 @@ function! ExtractMethod() range
 endfunction
 
 " ci,$tmp^[ko$tmp = ^[pa;^[
-function! ExtractVariable()
+function! s:ExtractVariable()
   let name = inputdialog("Name of new variable:")
   exec "normal ci,$" . name . "\<Esc>"
   exec "normal! ko$" . name . " = \<Esc>"
@@ -67,7 +89,7 @@ function! ExtractVariable()
 endfunction
 
 " caW$this->tmp ^[/^class^Mjoprivate ^[pi;^[:w^Ml
-function! ExtractClassProperty()
+function! s:ExtractClassProperty()
   normal! mr
   normal! ^l"ryW
   let name = substitute(@r, "^\\s\\+\\|\\s\\+$", "", "g")
@@ -77,7 +99,7 @@ function! ExtractClassProperty()
   normal! `r
 endfunction
 
-function! ExtractInterface()
+function! s:ExtractInterface()
   let name = inputdialog("Name of new interface:")
   exec "normal! Gointerface " . name . "\<CR>{"
   g/const/normal! yyGp
@@ -86,7 +108,7 @@ function! ExtractInterface()
   normal! Go}
 endfunction
 
-function! RenameLocalVariable()
+function! s:RenameLocalVariable()
   normal! "zyaw
   let oldName = substitute(@z, "^\\s\\+\\|\\s\\+$", "", "g")
   let newName = inputdialog("Rename " . oldName . " to:")
@@ -99,7 +121,7 @@ function! RenameLocalVariable()
   exec startLine . ',' . stopLine . ':s/\<' . oldName . '\>/' . newName . '/g'
 endfunction
 
-function! RenameClassVariable()
+function! s:RenameClassVariable()
   normal "zyaw
   let oldName = substitute(@z, "^\\s\\+\\|\\s\\+$", "", "g")
   let newName = inputdialog("Rename " . oldName . " to:")
@@ -116,7 +138,7 @@ function! RenameClassVariable()
   copen
 endfunction
 
-function! ImplementAbstractFunctions()
+function! s:ImplementAbstractFunctions()
   if (getline(line('.')) =~# 'function.*;$')
     g/function.*;$/normal! o{
     g/function.*;$/normal! jothrow new \RuntimeException('Not implemented yet.');
