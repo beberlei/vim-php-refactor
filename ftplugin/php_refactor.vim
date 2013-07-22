@@ -67,7 +67,7 @@ noremap <buffer> <unique> <Plug>RenameClassVariable        :call <SID>RenameClas
 noremap <buffer> <unique> <Plug>ImplementAbstractFunctions :call <SID>ImplementAbstractFunctions()<CR>
 
 function! s:ExtractMethod() range
-  let name = inputdialog("Name of new method:")
+  let name = inputdialog("Name of new method: ")
   '<
   exec "normal! O\<BS>private function " . name . "()\<CR>{\<Esc>"
   '>
@@ -82,7 +82,7 @@ endfunction
 
 " ci,$tmp^[ko$tmp = ^[pa;^[
 function! s:ExtractVariable()
-  let name = inputdialog("Name of new variable:")
+  let name = inputdialog("Name of new variable: ")
   exec "normal ci,$" . name . "\<Esc>"
   exec "normal! ko$" . name . " = \<Esc>"
   normal! pa;
@@ -100,7 +100,7 @@ function! s:ExtractClassProperty()
 endfunction
 
 function! s:ExtractInterface()
-  let name = inputdialog("Name of new interface:")
+  let name = inputdialog("Name of new interface: ")
   exec "normal! Gointerface " . name . "\<CR>{"
   g/const/normal! yyGp
   g/public \$/normal! yyGp
@@ -111,7 +111,7 @@ endfunction
 function! s:RenameLocalVariable()
   normal! "zyaw
   let oldName = substitute(@z, "^\\s\\+\\|\\s\\+$", "", "g")
-  let newName = inputdialog("Rename " . oldName . " to:")
+  let newName = inputdialog("Rename " . oldName . " to: ")
   call search('function', 'bW')
   call search('{', 'W')
   normal! [[
@@ -124,7 +124,7 @@ endfunction
 function! s:RenameClassVariable()
   normal "zyaw
   let oldName = substitute(@z, "^\\s\\+\\|\\s\\+$", "", "g")
-  let newName = inputdialog("Rename " . oldName . " to:")
+  let newName = inputdialog("Rename " . oldName . " to: ")
   call search('class ', 'bW')
   call search('{', 'w')
   let startLine = line('.')
