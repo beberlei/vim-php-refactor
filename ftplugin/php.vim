@@ -35,7 +35,7 @@
 " SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 if !exists("no_plugin_maps") && !exists("no_php_maps")
-  vmap \em :call ExtractMethod()<CR>
+  vnoremap \em :call ExtractMethod()<CR>
   nnoremap \ev :call ExtractVariable()<CR>
   nnoremap \ep :call ExtractClassProperty()<CR>
   nnoremap \ei :call ExtractInterface()<CR>
@@ -47,13 +47,13 @@ endif
 function! ExtractMethod() range
   let name = inputdialog("Name of new method:")
   '<
-  exe "normal! O\<BS>private function " . name ."()\<CR>{\<Esc>"
+  exec "normal! O\<BS>private function " . name . "()\<CR>{\<Esc>"
   '>
-  exe "normal! oreturn ;\<CR>}\<Esc>k"
+  exec "normal! oreturn ;\<CR>}\<Esc>k"
   s/return/\/\/ return/ge
   normal! j%
   normal! kf(
-  exe "normal! yyPi// = \<Esc>wdwA;\<Esc>"
+  exec "normal! yyPi// = \<Esc>wdwA;\<Esc>"
   normal! ==
   normal! j0w
 endfunction
@@ -61,68 +61,67 @@ endfunction
 " ci,$tmp^[ko$tmp = ^[pa;^[
 function! ExtractVariable()
   let name = inputdialog("Name of new variable:")
-  exe "normal ci,$" . name . "\<Esc>"
-  exe "normal ko$" . name . " = \<Esc>"
-  normal pa;
+  exec "normal ci,$" . name . "\<Esc>"
+  exec "normal! ko$" . name . " = \<Esc>"
+  normal! pa;
 endfunction
 
 " caW$this->tmp ^[/^class^Mjoprivate ^[pi;^[:w^Ml
 function! ExtractClassProperty()
-  normal mr
-  normal ^l"ryW
-  let name = substitute(@r,"^\\s\\+\\|\\s\\+$","","g")
-  exe "normal ^cW$this->" . name . "\<Esc>"
+  normal! mr
+  normal! ^l"ryW
+  let name = substitute(@r, "^\\s\\+\\|\\s\\+$", "", "g")
+  exec "normal! ^cW$this->" . name . "\<Esc>"
   /^class
-  exe "normal! joprivate $" . name .";"
-  normal `r
+  exec "normal! joprivate $" . name . ";"
+  normal! `r
 endfunction
 
 function! ExtractInterface()
   let name = inputdialog("Name of new interface:")
-  exe "normal Gointerface " . name . "\<Cr>{"
-  :g/const/ :normal yyGp
-  :g/public \$/ :normal yyGp
-  :g/public function/ :normal yyGp$a;
-  normal Go}
+  exec "normal! Gointerface " . name . "\<CR>{"
+  g/const/normal! yyGp
+  g/public \$/normal! yyGp
+  g/public function/normal! yyGp$a;
+  normal! Go}
 endfunction
 
 function! RenameLocalVariable()
-  normal "zyaw
-  let oldName = substitute(@z,"^\\s\\+\\|\\s\\+$","","g")
+  normal! "zyaw
+  let oldName = substitute(@z, "^\\s\\+\\|\\s\\+$", "", "g")
   let newName = inputdialog("Rename " . oldName . " to:")
   call search('function', 'bW')
   call search('{', 'W')
-  exec 'normal! [['
+  normal! [[
   let startLine = line('.')
-  exec "normal! %"
+  normal! %
   let stopLine = line('.')
-  exec startLine . ',' . stopLine . ':s/\<' . oldName . '\>/'. newName .'/g'
+  exec startLine . ',' . stopLine . ':s/\<' . oldName . '\>/' . newName . '/g'
 endfunction
 
 function! RenameClassVariable()
   normal "zyaw
-  let oldName = substitute(@z,"^\\s\\+\\|\\s\\+$","","g")
+  let oldName = substitute(@z, "^\\s\\+\\|\\s\\+$", "", "g")
   let newName = inputdialog("Rename " . oldName . " to:")
   call search('class ', 'bW')
   call search('{', 'w')
   let startLine = line('.')
-  exec "normal! %"
+  normal! %
   let stopLine = line('.')
   exec startLine . ',' . stopLine . ':s/public $' . oldName . '/public $'. newName .'/ge'
   exec startLine . ',' . stopLine . ':s/protected $' . oldName . '/protected $'. newName .'/ge'
   exec startLine . ',' . stopLine . ':s/private $' . oldName . '/private '. newName .'/ge'
   exec startLine . ',' . stopLine . ':s/$this->' . oldName . '/$this->'. newName .'/ge'
-  exec ":vimgrep /" . newName . "/ %"
-  :copen
+  exec "vimgrep /" . newName . "/ %"
+  copen
 endfunction
 
 function! ImplementAbstractFunctions()
-  if (getline(line(".")) =~ 'function.*;$')
-    g/function.*;$/norm! o{
-    g/function.*;$/norm! jothrow new \RuntimeException('Not implemented, yet.');
-    g/function.*;$/norm! jjo}
-    g/function.*;$/s/abstract //
-    g/    function.*;$/s/function/public function/
+  if (getline(line('.')) =~# 'function.*;$')
+    g/function.*;$/normal! o{
+    g/function.*;$/normal! jothrow new \RuntimeException('Not implemented yet.');
+    g/function.*;$/normal! jjo}
+    g/function.*;$/s/abstract /public /
     g/function.*;$/s/;$//
   endif
 endfunction

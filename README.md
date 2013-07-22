@@ -18,7 +18,7 @@ Some very simple refactorings for PHP code using VIM:
 
 Default key mappings defined:
 
-    vmap \em :call ExtractMethod()<CR>
+    vnoremap \em :call ExtractMethod()<CR>
     nnoremap \ev :call ExtractVariable()<CR>
     nnoremap \ep :call ExtractClassProperty()<CR>
     nnoremap \ei :call ExtractInterface()<CR>
