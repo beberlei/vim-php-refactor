@@ -35,13 +35,13 @@
 " SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 if !exists("no_plugin_maps") && !exists("no_php_maps")
-    vmap \em :call ExtractMethod()<CR>
-    nnoremap \ev :call ExtractVariable()<CR>
-    nnoremap \ep :call ExtractClassProperty()<CR>
-    nnoremap \ei :call ExtractInterface()<CR>
-    nnoremap \rlv :call RenameLocalVariable()<CR>
-    nnoremap \rcv :call RenameClassVariable()<CR>
-    nnoremap \iaf :call ImplementAbstractFunctions()<CR>
+  vmap \em :call ExtractMethod()<CR>
+  nnoremap \ev :call ExtractVariable()<CR>
+  nnoremap \ep :call ExtractClassProperty()<CR>
+  nnoremap \ei :call ExtractInterface()<CR>
+  nnoremap \rlv :call RenameLocalVariable()<CR>
+  nnoremap \rcv :call RenameClassVariable()<CR>
+  nnoremap \iaf :call ImplementAbstractFunctions()<CR>
 endif
 
 function! ExtractMethod() range
@@ -60,70 +60,69 @@ endfunction
 
 " ci,$tmp^[ko$tmp = ^[pa;^[
 function! ExtractVariable()
-    let name = inputdialog("Name of new variable:")
-    exe "normal ci,$" . name . "\<Esc>"
-    exe "normal ko$" . name . " = \<Esc>"
-    normal pa;
+  let name = inputdialog("Name of new variable:")
+  exe "normal ci,$" . name . "\<Esc>"
+  exe "normal ko$" . name . " = \<Esc>"
+  normal pa;
 endfunction
 
 " caW$this->tmp ^[/^class^Mjoprivate ^[pi;^[:w^Ml
 function! ExtractClassProperty()
-    normal mr
-    normal ^l"ryW
-    let name = substitute(@r,"^\\s\\+\\|\\s\\+$","","g") 
-    exe "normal ^cW$this->" . name . "\<Esc>"
-    /^class
-    exe "normal! joprivate $" . name .";"
-    normal `r
+  normal mr
+  normal ^l"ryW
+  let name = substitute(@r,"^\\s\\+\\|\\s\\+$","","g")
+  exe "normal ^cW$this->" . name . "\<Esc>"
+  /^class
+  exe "normal! joprivate $" . name .";"
+  normal `r
 endfunction
 
 function! ExtractInterface()
-    let name = inputdialog("Name of new interface:")
-    exe "normal Gointerface " . name . "\<Cr>{"
-    :g/const/ :normal yyGp
-    :g/public \$/ :normal yyGp
-    :g/public function/ :normal yyGp$a;
-    normal Go}
+  let name = inputdialog("Name of new interface:")
+  exe "normal Gointerface " . name . "\<Cr>{"
+  :g/const/ :normal yyGp
+  :g/public \$/ :normal yyGp
+  :g/public function/ :normal yyGp$a;
+  normal Go}
 endfunction
 
 function! RenameLocalVariable()
-    normal "zyaw
-    let oldName = substitute(@z,"^\\s\\+\\|\\s\\+$","","g") 
-    let newName = inputdialog("Rename " . oldName . " to:")
-    call search('function', 'bW')
-    call search('{', 'W')
-    exec 'normal! [[' 
-    let startLine = line('.')
-    exec "normal! %"
-    let stopLine = line('.')
-    exec startLine . ',' . stopLine . ':s/\<' . oldName . '\>/'. newName .'/g'
+  normal "zyaw
+  let oldName = substitute(@z,"^\\s\\+\\|\\s\\+$","","g")
+  let newName = inputdialog("Rename " . oldName . " to:")
+  call search('function', 'bW')
+  call search('{', 'W')
+  exec 'normal! [['
+  let startLine = line('.')
+  exec "normal! %"
+  let stopLine = line('.')
+  exec startLine . ',' . stopLine . ':s/\<' . oldName . '\>/'. newName .'/g'
 endfunction
 
 function! RenameClassVariable()
-    normal "zyaw
-    let oldName = substitute(@z,"^\\s\\+\\|\\s\\+$","","g") 
-    let newName = inputdialog("Rename " . oldName . " to:")
-    call search('class ', 'bW')
-    call search('{', 'w')
-    let startLine = line('.')
-    exec "normal! %"
-    let stopLine = line('.')
-    exec startLine . ',' . stopLine . ':s/public $' . oldName . '/public $'. newName .'/ge'
-    exec startLine . ',' . stopLine . ':s/protected $' . oldName . '/protected $'. newName .'/ge'
-    exec startLine . ',' . stopLine . ':s/private $' . oldName . '/private '. newName .'/ge'
-    exec startLine . ',' . stopLine . ':s/$this->' . oldName . '/$this->'. newName .'/ge'
-    exec ":vimgrep /" . newName . "/ %"
-    :copen
+  normal "zyaw
+  let oldName = substitute(@z,"^\\s\\+\\|\\s\\+$","","g")
+  let newName = inputdialog("Rename " . oldName . " to:")
+  call search('class ', 'bW')
+  call search('{', 'w')
+  let startLine = line('.')
+  exec "normal! %"
+  let stopLine = line('.')
+  exec startLine . ',' . stopLine . ':s/public $' . oldName . '/public $'. newName .'/ge'
+  exec startLine . ',' . stopLine . ':s/protected $' . oldName . '/protected $'. newName .'/ge'
+  exec startLine . ',' . stopLine . ':s/private $' . oldName . '/private '. newName .'/ge'
+  exec startLine . ',' . stopLine . ':s/$this->' . oldName . '/$this->'. newName .'/ge'
+  exec ":vimgrep /" . newName . "/ %"
+  :copen
 endfunction
 
 function! ImplementAbstractFunctions()
-    if (getline(line(".")) =~ 'function.*;$')
-        g/function.*;$/norm! o{
-        g/function.*;$/norm! jothrow new \RuntimeException('Not implemented, yet.');
-        g/function.*;$/norm! jjo}
-        g/function.*;$/s/abstract //
-        g/    function.*;$/s/function/public function/
-        g/function.*;$/s/;$//
-    endif
+  if (getline(line(".")) =~ 'function.*;$')
+    g/function.*;$/norm! o{
+    g/function.*;$/norm! jothrow new \RuntimeException('Not implemented, yet.');
+    g/function.*;$/norm! jjo}
+    g/function.*;$/s/abstract //
+    g/    function.*;$/s/function/public function/
+    g/function.*;$/s/;$//
+  endif
 endfunction
-
