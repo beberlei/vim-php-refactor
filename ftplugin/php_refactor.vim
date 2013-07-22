@@ -94,14 +94,15 @@ function! s:ExtractClassProperty()
   normal! ^l"ryW
   let name = substitute(@r, "^\\s\\+\\|\\s\\+$", "", "g")
   exec "normal! ^cW$this->" . name . "\<Esc>"
-  /^class
-  exec "normal! joprivate $" . name . ";"
+  ?^class
+  /{$
+  exec "normal! oprivate $" . name . ";"
   normal! `r
 endfunction
 
 function! s:ExtractInterface()
   let name = inputdialog("Name of new interface: ")
-  exec "normal! Gointerface " . name . "\<CR>{"
+  exec "normal! Go\<CR>interface " . name . "\<CR>{"
   g/const/normal! yyGp
   g/public \$/normal! yyGp
   g/public function/normal! yyGp$a;
