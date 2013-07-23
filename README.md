@@ -18,17 +18,20 @@ Some very simple refactorings for PHP code using VIM:
 
 Default key mappings defined:
 
-    vmap \em :call ExtractMethod()<CR>
-    nnoremap \ev :call ExtractVariable()<CR>
-    nnoremap \ep :call ExtractClassProperty()<CR>
-    nnoremap \ei :call ExtractInterface()<CR>
-    nnoremap \rlv :call RenameLocalVariable()<CR>
-    nnoremap \rcv :call RenameClassVariable()<CR>
-    nnoremap \iaf :call ImplementAbstractFunctions()<CR>
+    xmap <buffer> <unique> <LocalLeader>em <Plug>ExtractMethod
+    nmap <buffer> <unique> <LocalLeader>ev <Plug>ExtractVariable
+    nmap <buffer> <unique> <LocalLeader>ep <Plug>ExtractClassProperty
+    nmap <buffer> <unique> <LocalLeader>ei <Plug>ExtractInterface
+    nmap <buffer> <unique> <LocalLeader>rlv <Plug>RenameLocalVariable
+    nmap <buffer> <unique> <LocalLeader>rcv <Plug>RenameClassVariable
+    nmap <buffer> <unique> <LocalLeader>iaf <Plug>ImplementAbstractFunctions
 
 If you want avoid them being set put the following in your vimrc:
 
     let g:no_php_maps = 1
+
+Alternatively, you create your own maps, which will prevent the default ones
+from being set.
 
 ## Documentation
 
