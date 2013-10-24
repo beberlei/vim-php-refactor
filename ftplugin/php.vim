@@ -35,13 +35,13 @@
 " SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 if !exists("no_plugin_maps") && !exists("no_php_maps")
-    vmap \em :call ExtractMethod()<CR>
-    nnoremap \ev :call ExtractVariable()<CR>
-    nnoremap \ep :call ExtractClassProperty()<CR>
-    nnoremap \ei :call ExtractInterface()<CR>
-    nnoremap \rlv :call RenameLocalVariable()<CR>
-    nnoremap \rcv :call RenameClassVariable()<CR>
-    nnoremap \iaf :call ImplementAbstractFunctions()<CR>
+    vmap <Leader>em :call ExtractMethod()<CR>
+    nnoremap <Leader>ev :call ExtractVariable()<CR>
+    nnoremap <Leader>ep :call ExtractClassProperty()<CR>
+    nnoremap <Leader>ei :call ExtractInterface()<CR>
+    nnoremap <Leader>rlv :call RenameLocalVariable()<CR>
+    nnoremap <Leader>rcv :call RenameClassVariable()<CR>
+    nnoremap <Leader>iaf :call ImplementAbstractFunctions()<CR>
 endif
 
 function! ExtractMethod() range
